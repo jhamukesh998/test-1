@@ -27,37 +27,45 @@ worker_ips = ["10.126.17.236", "10.126.17.241"]
 # Set the port number for the worker-to-worker communication
 port = 12345
 
+# Define a function to listen for incoming connections
+def listen_for_connections(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.setblocking(False)
+        s.bind(("", port))
+        s.listen(2)
+        while True:
+            try:
+                conn, addr = s.accept()
+                yield conn
+            except socket.error:
+                time.sleep(0.1)
+
+# Define a function to exchange model parameters with the neighbors
 def exchange_params(worker_id, worker_ips, port, model_state):
     # Get the IP addresses of the neighboring workers
     num_workers = len(worker_ips)
     neighbor_ips = [worker_ips[(worker_id-1)%num_workers], worker_ips[(worker_id+1)%num_workers]]
     
-    # Create a listening socket on the specified port
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
-        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        listener.bind(("", port))
-        listener.listen(2)
-        time.sleep(5)
-        print(f"Worker {worker_id} is listening on port {port}...")
-        
-        # Wait for incoming connections and exchange model parameters
-        for neighbor_ip in neighbor_ips:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                print(f"Worker {worker_id} is connecting to {neighbor_ip}:{port}...")
+    # Connect to the neighboring workers and exchange model parameters
+    for neighbor_ip in neighbor_ips:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.setblocking(False)
+            try:
                 s.connect((neighbor_ip, port))
-                s.sendall(model_state)
-                received_state = s.recv(1024)
-                model.load_state_dict(torch.load(received_state))
-            
-            # Accept incoming connections and exchange model parameters
-            conn, addr = listener.accept()
-            with conn:
-                print(f"Worker {worker_id} is exchanging with {addr}...")
-                received_state = conn.recv(1024)
-                conn.sendall(model_state)
-                model.load_state_dict(torch.load(received_state))
-                
-    print(f"Worker {worker_id} is done exchanging model parameters.")
+            except socket.error:
+                pass
+            s.sendall(model_state)
+
+    # Accept connections from neighboring workers and receive model parameters
+    connections = []
+    for conn in listen_for_connections(port):
+        connections.append(conn)
+        if len(connections) == 2:
+            break
+    for conn in connections:
+        received_state = conn.recv(1024)
+        model.load_state_dict(torch.load(received_state))
+        conn.sendall(model_state)
 
 
 """
