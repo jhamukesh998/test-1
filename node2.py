@@ -4,7 +4,8 @@ from sklearn.linear_model import SGDRegressor
 
 # Set up socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.bind(('10.126.17.241', 8000))
+#sock.bind(('10.126.17.241', 8000))
+sock.bind(('192.168.0.104', 8000))
 sock.listen(1)
 
 # Connect to Node 1
