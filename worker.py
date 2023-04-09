@@ -4,6 +4,8 @@ import torch.optim as optim
 import numpy as np
 import socket
 import time
+import threading
+
 
 # Define the neural network architecture
 class Net(nn.Module):
@@ -26,7 +28,7 @@ worker_ips = ["10.126.17.236", "10.126.17.241"]
 
 # Set the port number for the worker-to-worker communication
 port = 12345
-
+ 
 # Define a function to listen for incoming connections
 def listen_for_connections(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -40,6 +42,10 @@ def listen_for_connections(port):
             except socket.error:
                 time.sleep(0.1)
 
+# creating thread
+t1 = threading.Thread(target=listen_for_connections, args=(port,))
+t1.start()
+                
 # Define a function to exchange model parameters with the neighbors
 def exchange_params(worker_id, worker_ips, port, model_state):
     # Get the IP addresses of the neighboring workers
