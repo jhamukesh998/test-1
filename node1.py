@@ -17,7 +17,7 @@ model = SGDRegressor(random_state=42)
 
 # Connect to Node 2
 node2_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-node2_sock.connect(('10.126.17.241', 8000))
+node2_sock.connect(('192.168.0.104', 8000))
 
 # Send data to Node 2
 np.save('data.npy', (X, y))
