@@ -22,11 +22,44 @@ model = Net()
 optimizer = optim.SGD(model.parameters(), lr=0.1)
 
 # Set the IP addresses of the workers
-worker_ips = ["192.168.0.2", "192.168.0.3"]
+worker_ips = ["10.126.17.236", "10.126.17.241"]
 
 # Set the port number for the worker-to-worker communication
 port = 12345
 
+def exchange_params(worker_id, worker_ips, port, model_state):
+    # Get the IP addresses of the neighboring workers
+    num_workers = len(worker_ips)
+    neighbor_ips = [worker_ips[(worker_id-1)%num_workers], worker_ips[(worker_id+1)%num_workers]]
+    
+    # Create a listening socket on the specified port
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+        listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        listener.bind(("", port))
+        listener.listen(2)
+        print(f"Worker {worker_id} is listening on port {port}...")
+        
+        # Wait for incoming connections and exchange model parameters
+        for neighbor_ip in neighbor_ips:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                print(f"Worker {worker_id} is connecting to {neighbor_ip}:{port}...")
+                s.connect((neighbor_ip, port))
+                s.sendall(model_state)
+                received_state = s.recv(1024)
+                model.load_state_dict(torch.load(received_state))
+            
+            # Accept incoming connections and exchange model parameters
+            conn, addr = listener.accept()
+            with conn:
+                print(f"Worker {worker_id} is exchanging with {addr}...")
+                received_state = conn.recv(1024)
+                conn.sendall(model_state)
+                model.load_state_dict(torch.load(received_state))
+                
+    print(f"Worker {worker_id} is done exchanging model parameters.")
+
+
+"""
 # Define a function to exchange model parameters with the neighbors
 def exchange_params(worker_id, worker_ips, port, model_state):
     # Get the IP addresses of the neighboring workers
@@ -40,6 +73,7 @@ def exchange_params(worker_id, worker_ips, port, model_state):
             s.sendall(model_state)
             received_state = s.recv(1024)
             model.load_state_dict(torch.load(received_state))
+"""
 
 # Define the training loop
 def train(worker_id, worker_ips, port, num_epochs=10):
