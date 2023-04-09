@@ -16,7 +16,7 @@ addresses = [("192.168.0.9", 8080), ("192.168.0.104", 8080)]
 my_addresses = [("192.168.0.9", 8080)]
 # create a socket for each node
 sockets = []
-for i in range(num_nodes):
+for i in range(1):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(my_addresses[i])
     s.listen()
