@@ -37,6 +37,7 @@ def exchange_params(worker_id, worker_ips, port, model_state):
         listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         listener.bind(("", port))
         listener.listen(2)
+        time.sleep(5)
         print(f"Worker {worker_id} is listening on port {port}...")
         
         # Wait for incoming connections and exchange model parameters
