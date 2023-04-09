@@ -12,7 +12,7 @@ num_nodes = 2
 num_features = X.shape[1]
 
 # define the IP addresses and port numbers for each node
-addresses = [("192.168.0.9", 5000), ("192.168.0.104", 5000)]
+addresses = [("192.168.0.9", 8080), ("192.168.0.104", 8080)]
 
 # create a socket for each node
 sockets = []
