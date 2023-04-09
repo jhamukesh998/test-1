@@ -10,7 +10,7 @@ sock.listen(1)
 
 # Connect to Node 1
 node1_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-node1_sock.connect(('10.126.17.236', 8000))
+node1_sock.connect(('192.168.0.9', 8000))
 
 # Receive data from Node 1 and train model on it
 data = node1_sock.recv(4096)
