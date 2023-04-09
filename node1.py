@@ -5,7 +5,8 @@ from sklearn.linear_model import SGDRegressor
 
 # Set up socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.bind(('10.126.17.236', 8000))
+#sock.bind(('10.126.17.236', 8000))
+sock.bind(('192.168.0.9', 8000))
 sock.listen(1)
 
 # Generate data
