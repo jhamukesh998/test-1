@@ -1,4 +1,4 @@
-#C:\Users\jaind\Desktop\Projects\Assignments\DISML\test-1\src
+#C:\Users\jaind\Desktop\Projects\Assignments\DISML\test-1
 
 import socket
 import time
@@ -61,6 +61,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         ips.add(addr[0])
         print(addr[0])
 
+        # receive data from the client
+        data = connection.recv(1024)
+
+        # print the data received from the client
+        print('Received data:', data.decode())
+
         # # Send a response to the client
         # message = "Hello, client!"
         # conn.sendall(message.encode())
@@ -71,8 +77,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             #sf.settimeout(0.1)
             sf.connect((addr[0], PORT))
             sf.sendall(b"Hello, network!")
-            response = sf.recv(1024)
-            print(f"Response from {target}: {response.decode()}")
+            # response = sf.recv(1024)
+            # print(f"Response from {target}: {response.decode()}")
 
 
         # Close the connection
