@@ -48,45 +48,46 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # Print a message indicating that the server is listening
     print(f"Server listening on {HOST}:{PORT}...")
 
-    # Accept incoming connections and handle them
-    while True:
-        print("accepting connection")
-        
-        # Wait for a connection
-        conn, addr = s.accept()
 
-        # Print a message indicating that a connection was received
-        print(f"Connection received from {addr}")
-        print(type(addr))
-        ips.add(addr[0])
-        print(addr[0])
+    try:
+        # Accept incoming connections and handle them
+        while True:
+            print("accepting connection")
+            
+            # Wait for a connection
+            conn, addr = s.accept()
 
-        # receive data from the client
-        data = conn.recv(1024)
+            # Print a message indicating that a connection was received
+            print(f"Connection received from {addr}")
+            print(type(addr))
+            ips.add(addr[0])
+            print(addr[0])
 
-        # print the data received from the client
-        print('Received data:', data.decode())
+            # receive data from the client
+            data = conn.recv(1024)
 
-        # # Send a response to the client
-        # message = "Hello, client!"
-        # conn.sendall(message.encode())
+            # print the data received from the client
+            print('Received data:', data.decode())
 
-        try:
+            # # Send a response to the client
+            # message = "Hello, client!"
+            # conn.sendall(message.encode())
+
             time.sleep(3)
-        except:
-            break
-
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sf:
-            print("sleeping and then will connect!")
-            #sf.settimeout(0.1)
-            sf.connect((addr[0], PORT))
-            sf.sendall(b"From Node2")
-            # response = sf.recv(1024)
-            # print(f"Response from {target}: {response.decode()}")
+            
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sf:
+                print("sleeping and then will connect!")
+                #sf.settimeout(0.1)
+                sf.connect((addr[0], PORT))
+                sf.sendall(b"From Node2")
+                # response = sf.recv(1024)
+                # print(f"Response from {target}: {response.decode()}")
 
 
-        # Close the connection
-        conn.close()
+            # Close the connection
+            conn.close()
+    except Exception as e:
+        print("Training...............")
 
     for target in ips:
         if target != HOST:
