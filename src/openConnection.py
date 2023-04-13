@@ -48,6 +48,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     # Print a message indicating that the server is listening
     print(f"Server listening on {HOST}:{PORT}...")
 
+    broadcast = True
 
     try:
         # Accept incoming connections and handle them
@@ -68,6 +69,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
             # print the data received from the client
             print('Received data:', data.decode())
+            print(type(data.encode())
+            if str(data.encode()).startswith("Start train"):
+                broadcast = False
 
             # # Send a response to the client
             # message = "Hello, client!"
@@ -89,11 +93,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print("Training...............")
 
     for target in ips:
-        if target != HOST:
+        if target != HOST and broadcast:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sf:
                 print("sleeping and then will connect!")
                 #sf.settimeout(0.1)
-                sf.connect((addr[0], PORT))
+                sf.connect((target, PORT))
                 sf.sendall(b"Start training")
                 # response = sf.recv(1024)
                 # print(f"Response from {target}: {response.decode()}")
