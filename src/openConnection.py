@@ -3,7 +3,7 @@
 import socket
 import time
 
-s = set()
+ips = set()
 
 # Get the private IP address of the host machine
 def get_private_ip():
@@ -14,7 +14,7 @@ def get_private_ip():
     return ip
 
 HOST = get_private_ip()
-s.append(HOST)
+ips.append(HOST)
 PORT = 2222
 
 # Send message to all IP addresses within the network on a particular port
@@ -58,7 +58,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Print a message indicating that a connection was received
         print(f"Connection received from {addr}")
         print(type(addr))
-        s.append(addr[0])
+        ips.append(addr[0])
         print(addr[0])
 
         # # Send a response to the client
@@ -78,4 +78,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Close the connection
         conn.close()
 
-        print("List of IPs",list(s))
+        print("List of IPs",list(ips))
