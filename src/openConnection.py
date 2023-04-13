@@ -71,10 +71,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             #sf.settimeout(0.1)
             sf.connect((addr[0], PORT))
             sf.sendall(b"Hello, network!")
-            #print(f"Response from {target}: {response.decode()}")
+            response = sf.recv(1024)
+            print(f"Response from {target}: {response.decode()}")
 
 
         # Close the connection
         conn.close()
 
-        print(list(s))
+        print("List of IPs",list(s))
