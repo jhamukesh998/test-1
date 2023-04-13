@@ -47,6 +47,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     # Accept incoming connections and handle them
     while True:
+        print("accepting connection")
+        
         # Wait for a connection
         conn, addr = s.accept()
 
