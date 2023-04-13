@@ -83,10 +83,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 # response = sf.recv(1024)
                 # print(f"Response from {target}: {response.decode()}")
 
-
             # Close the connection
             conn.close()
-    except Exception as e:
+    except (KeyboardInterrupt,Exception) as e:
         print("Training...............")
 
     for target in ips:
