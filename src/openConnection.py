@@ -1,4 +1,4 @@
-#C:\Users\jaind\Desktop\Projects\Assignments\DISML\test-1
+#C:\Users\jaind\Desktop\Projects\Assignments\DISML\test-1\src
 
 import socket
 import time
@@ -26,7 +26,7 @@ for i in range(1, 255):
                 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                     s.settimeout(1)
                     s.connect((target, PORT))
-                    s.sendall(b"Hello, network!")
+                    s.sendall(b"From Node2")
                     response = s.recv(1024)
                     print(f"Response from {target}: {response.decode()}")
             except socket.error:
@@ -62,7 +62,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         print(addr[0])
 
         # receive data from the client
-        data = connection.recv(1024)
+        data = conn.recv(1024)
 
         # print the data received from the client
         print('Received data:', data.decode())
@@ -71,12 +71,16 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # message = "Hello, client!"
         # conn.sendall(message.encode())
 
-        time.sleep(3)
+        try:
+            time.sleep(3)
+        except:
+            break
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sf:
             print("sleeping and then will connect!")
             #sf.settimeout(0.1)
             sf.connect((addr[0], PORT))
-            sf.sendall(b"Hello, network!")
+            sf.sendall(b"From Node2")
             # response = sf.recv(1024)
             # print(f"Response from {target}: {response.decode()}")
 
@@ -84,4 +88,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         # Close the connection
         conn.close()
 
-        print("List of IPs",list(ips))
+    for target in ips:
+        if target != HOST:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sf:
+                print("sleeping and then will connect!")
+                #sf.settimeout(0.1)
+                sf.connect((addr[0], PORT))
+                sf.sendall(b"Start training")
+                # response = sf.recv(1024)
+                # print(f"Response from {target}: {response.decode()}")
+
+
+
+
+print("List of IPs",list(ips))
